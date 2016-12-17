@@ -31,7 +31,7 @@ def TrainSDH(data,label,lenCode,numAnchors,paraLambda,paraEta,numIter):
             code[kk,vecZ<0]=-1 
     
     model={"anchorData":anchorData,"sigmaRBF":sigmaRBF,"matProj":matP}
-    return code ,model 
+    return code.T ,model 
     
 def EvalSHD(data,model):
     dataNum,dataDim=data.shape
@@ -42,7 +42,16 @@ def EvalSHD(data,model):
     projData=npy.dot(matP.T,phi)
     code=npy.ones(projData.shape,dtype=npy.int32)
     code[projData<0]=-1
-    return code
+    if 0==code.shape[0]%8:
+        codeByteNum=code.shape[0]/8
+    else:
+        codeByteNum=1+code.shape[0]/8
+    compactCode=npy.zeros((code.shape[1],codeByteNum),dtype=npy.uint8)
+    for kk in range(code.shape[0]):
+        idxByte=kk/8
+        idxBit=kk%8
+        compactCode[code[kk,:]==1,idxByte]+=(1<<idxBit)
+    return compactCode
 
 
 if __name__=="__main__":
