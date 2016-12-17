@@ -10,6 +10,8 @@ Implementation of various descriptor learning and feature hashing method
 
 [4] Jegou H, Douze M, Schmid C. Product quantization for nearest neighbor search[J]. IEEE transactions on pattern analysis and machine intelligence, 2011, 33(1): 117-128.
 
+[5] Fumin Shen,Chunhua Shen,Wei Liu,Heng Tao Shen,Supervised Discrete Hashing, CVPR, 2015. 
+
 [5] Erin Liong, Venice, et al. "Deep hashing for compact binary codes learning." Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. 2015.
 
 [6]Zagoruyko, Sergey, and Nikos Komodakis. "Learning to compare image patches via convolutional neural networks." Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. 2015.
