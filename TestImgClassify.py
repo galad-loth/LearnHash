@@ -26,15 +26,22 @@ def ReadCIFAR10Gist():
     dataTemp=scio.loadmat("data\\cifar10\\cifar10_train_batch3.mat") 
     trainData3=dataTemp["gistFeat"]
     trainLabel3=npy.ravel(dataTemp["labels"])
-    trainData=npy.concatenate((trainData1,trainData2,trainData3),axis=0)
-    trainLabel=npy.concatenate((trainLabel1,trainLabel2,trainLabel3))
+    dataTemp=scio.loadmat("data\\cifar10\\cifar10_train_batch4.mat") 
+    trainData4=dataTemp["gistFeat"]
+    trainLabel4=npy.ravel(dataTemp["labels"])
+    dataTemp=scio.loadmat("data\\cifar10\\cifar10_train_batch5.mat") 
+    trainData5=dataTemp["gistFeat"]
+    trainLabel5=npy.ravel(dataTemp["labels"])
+    
+    trainData=npy.concatenate((trainData1,trainData2,trainData3,trainData4,trainData5),axis=0)
+    trainLabel=npy.concatenate((trainLabel1,trainLabel2,trainLabel3,trainLabel4,trainLabel5))
     
     return (trainData, trainLabel,testData,testLabel)
         
 if __name__=="__main__":
     trainData,trainLabel,testData,testLabel=ReadCIFAR10Gist()
     print("Training SVM...")
-    svmClf=SVC(50,"linear")
+    svmClf=SVC(10,"linear")
     svmClf.fit(trainData,trainLabel)
     predLabel=svmClf.predict(testData)
     confMat,oa=EvalAccuracy(predLabel,testLabel,range(10))

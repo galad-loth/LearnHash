@@ -2,20 +2,24 @@ import numpy as npy
 from matplotlib import pyplot as plt
 import cv2
 
-
 def TestKptMatch():    
     img1=cv2.imread("E:\\DevProj\\Datasets\\VGGAffine\\bark\\img1.ppm",cv2.IMREAD_COLOR)
     img2=cv2.imread("E:\\DevProj\\Datasets\\VGGAffine\\bark\\img2.ppm",cv2.IMREAD_COLOR)
-    
     gray1=cv2.cvtColor(img1,cv2.COLOR_BGR2GRAY)
     gray2=cv2.cvtColor(img2,cv2.COLOR_BGR2GRAY)
     gap_width=20
     black_gap=npy.zeros((img1.shape[0],gap_width),dtype=npy.uint8)
     
-    objSIFT = cv2.SIFT(500)
-    kpt1,desc1 = objSIFT.detectAndCompute(gray1,None) 
-    kpt2,desc2 = objSIFT.detectAndCompute(gray2,None) 
-    objMatcher=cv2.BFMatcher(cv2.NORM_L2)
+#    objSIFT = cv2.SIFT(500)
+#    kpt1,desc1 = objSIFT.detectAndCompute(gray1,None) 
+#    kpt2,desc2 = objSIFT.detectAndCompute(gray2,None) 
+#    objMatcher=cv2.BFMatcher(cv2.NORM_L2)
+#    matches=objMatcher.knnMatch(desc1,desc2,k=2)
+    
+    objORB = cv2.ORB(500)
+    kpt1,desc1 = objORB.detectAndCompute(gray1,None) 
+    kpt2,desc2 = objORB.detectAndCompute(gray2,None) 
+    objMatcher=cv2.BFMatcher(cv2.NORM_HAMMING)
     matches=objMatcher.knnMatch(desc1,desc2,k=2)
     
     goodMatches=[]

@@ -7,7 +7,16 @@ Created by jlfeng, 2017-01-09
 
 '''
 import numpy as npy
+import cv2
 
+def GetGtKnnIdx(queryData,baseData,numNN):
+    objMatcher=cv2.BFMatcher(cv2.NORM_L2)
+    matches=objMatcher.knnMatch(queryData,baseData,k=numNN)
+    idxKnn=npy.zeros((queryData.shape[0],numNN), dtype=npy.int32)
+    for kk in range(queryData.shape[0]):
+        for ll in range(numNN):
+            idxKnn[kk][ll]=matches[kk][ll].trainIdx
+    return idxKnn
 
 def GetClassMetric(gtLabal, testLabel, numClass=-1, labelSet=npy.array([])):
     if numClass>0:
@@ -64,10 +73,10 @@ def GetRetrivalMetric(gtIdx, testIdx, nnk, baseSize):
     
     
 if __name__=="__main__":
-    gtIdx=npy.array([[0,1,2,3,4,5,6,7,8,9],[0,1,2,3,4,5,6,7,8,9],[0,1,2,3,4,5,6,7,8,9]])
+    gtIdx=npy.array([[0,1,2,3,4,5,6,7,8,9],[5,6,7,8,9, 0,1,2,3,4],[3,4,5,0,1,2, 6,7,8,9]])
     testIdx=gtIdx.copy()
     npy.transpose(npy.random.shuffle(testIdx.T))
-    retrivMetric=GetRetrivalMetric(gtIdx[:,:6], testIdx, 3, 10)
+    retrivMetric=GetRetrivalMetric(gtIdx[:,:8], testIdx, 4, 10)
     print gtIdx
     print testIdx
     print retrivMetric

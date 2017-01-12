@@ -1,19 +1,8 @@
 import numpy as npy
-import cv2
-from LoadData import readFvecs,readIvecs
+from LoadData import ReadFvecs,ReadIvecs
 from sklearn.cluster import KMeans
 from scipy.spatial.distance import pdist,squareform 
-
-def GetGtIdx(queryData,baseData):
-    objMatcher=cv2.BFMatcher(cv2.NORM_L2)
-    matches=objMatcher.knnMatch(queryData,baseData,k=idxGt.shape[1])
-    idxKnn=npy.zeros((queryData.shape[0],idxGt.shape[1]), dtype=npy.int32)
-    for kk in range(queryData.shape[0]):
-        for ll in range(idxGt.shape[1]):
-            idxKnn[kk][ll]=matches[kk][ll].trainIdx
-    return idxKnn
-    # diff=npy.count_nonzero(idxGt-idxKnn)
-    # return (0==diff)
+from Utils import GetRetrivalMetric, GetGtKnnIdx
    
 def PQTrain(data, lenSubVec,numSubCenter):
     (dataSize, dataDim)=data.shape
@@ -69,23 +58,26 @@ def PQQuery(queryCode, baseCode, numSubCenter, modelPQ, k=5):
 
 if __name__=="__main__":
     dataPath="E:\\DevProj\\Datasets\\SIFT1M\\siftsmall"
-    trainData=readFvecs(dataPath,"siftsmall_learn.fvecs")
+    trainData=ReadFvecs(dataPath,"siftsmall_learn.fvecs")
     trainData=trainData.astype(npy.float32)
-    lenSubVec=16
+    lenSubVec=8
     numSubCenter=256
     
     modelPQ=PQTrain(trainData,lenSubVec,numSubCenter)
     
-    queryData=readFvecs(dataPath,"siftsmall_query.fvecs")
-    baseData=readFvecs(dataPath,"siftsmall_base.fvecs")
-    idxGt=readIvecs(dataPath,"siftsmall_groundtruth.ivecs")    
+    queryData=ReadFvecs(dataPath,"siftsmall_query.fvecs")
+    baseData=ReadFvecs(dataPath,"siftsmall_base.fvecs")
+    idxGt=ReadIvecs(dataPath,"siftsmall_groundtruth.ivecs")    
     queryData=queryData.astype(npy.float32)
     baseData=baseData.astype(npy.float32)
-    idxKnnGt=GetGtIdx(queryData,baseData)
+    idxKnnGt=GetGtKnnIdx(queryData,baseData,100)
     
     queryCode=PQEval(queryData,lenSubVec,numSubCenter,modelPQ["centers"])
     baseCode=PQEval(baseData,lenSubVec,numSubCenter,modelPQ["centers"])
     
-    idxKnnPred=PQQuery(queryCode, baseCode, numSubCenter, modelPQ, 10)
+    idxKnnPred=PQQuery(queryCode, baseCode, numSubCenter, modelPQ, 100)
+    retrivMetric=GetRetrivalMetric(idxKnnGt, idxKnnPred, 100, 1000010)
+    print retrivMetric
+    
     
     

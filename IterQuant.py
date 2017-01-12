@@ -1,9 +1,9 @@
 import numpy as npy
 from sklearn.decomposition import PCA  
 from scipy.linalg import svd
-from LoadData import ReadFvecs, GetGtKnnIdx
+from LoadData import ReadFvecs
 import cv2
-
+from Utils import GetRetrivalMetric , GetGtKnnIdx
 
 def ITQtrain(data,nbit, niter):
     data_mean=npy.mean(data,axis=0)
@@ -20,8 +20,7 @@ def ITQtrain(data,nbit, niter):
         codeITQ=npy.ones(dataTrans.shape, dtype=npy.float32)
         codeITQ[dataTemp2<0]=-1
     modelITQ={"mu":data_mean,"objPCA":objPCA, "matRot":matRot} 
-    return modelITQ
-        
+    return modelITQ       
 
 
 def ITQeval(data, modelITQ):
@@ -41,8 +40,6 @@ def ITQeval(data, modelITQ):
         codeITQ[dataTrans[:,kk]>0,idxByte]+=(1<<idxBit)
     return codeITQ
 
-
-
 if __name__=="__main__":
     dataPath="E:\\DevProj\\Datasets\\SIFT1M\\siftsmall"
     trainData=ReadFvecs(dataPath,"siftsmall_learn.fvecs")
@@ -57,7 +54,7 @@ if __name__=="__main__":
     queryCode=ITQeval(queryData,modelITQ)
     baseCode=ITQeval(baseData,modelITQ)
     
-    numNN=100
+    numNN=30
     objMatcher=cv2.BFMatcher(cv2.NORM_HAMMING)
     matches=objMatcher.knnMatch(queryCode,baseCode,k=numNN)
     idxKnn=npy.zeros((queryData.shape[0],numNN), dtype=npy.int32)
@@ -65,6 +62,7 @@ if __name__=="__main__":
         for ll in range(numNN):
             idxKnn[kk][ll]=matches[kk][ll].trainIdx
     
-    
+    retrivMetric=GetRetrivalMetric(idxKnnGt, idxKnn, numNN, baseData.shape[0]+1)
+    print retrivMetric
 
 

@@ -3,7 +3,7 @@ import struct
 import os
 from scipy import io as scio
 
-def readFvecs(dataPath, dataFile, start=0, end=-1):
+def ReadFvecs(dataPath, dataFile, start=0, end=-1):
     filePath=os.path.join(dataPath,dataFile)
     with open(filePath,mode="rb") as fid:
         buf=fid.read(4)
@@ -25,7 +25,7 @@ def readFvecs(dataPath, dataFile, start=0, end=-1):
     data=data[:,1:]
     return data
         
-def readIvecs(dataPath, dataFile, start=0, end=-1):
+def ReadIvecs(dataPath, dataFile, start=0, end=-1):
     filePath=os.path.join(dataPath,dataFile)
     with open(filePath,mode="rb") as fid:
         buf=fid.read(4)
@@ -76,4 +76,4 @@ def ReadCIFAR10Gist():
 if __name__=="__main__":
     dataPath="E:\\DevProj\\Datasets\\SIFT1M\\sift"
     dataFile="sift_groundtruth.ivecs"
-    data=readIvecs(dataPath, dataFile)
+    data=ReadIvecs(dataPath, dataFile)
