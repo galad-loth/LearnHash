@@ -3,7 +3,7 @@ from sklearn.decomposition import PCA
 from scipy.linalg import svd
 from LoadData import ReadFvecs
 import cv2
-from Utils import GetRetrivalMetric , GetGtKnnIdx
+from Utils import GetRetrivalMetric , GetKnnIdx, GetCompactCode
 
 def ITQtrain(data,nbit, niter):
     data_mean=npy.mean(data,axis=0)
@@ -29,15 +29,10 @@ def ITQeval(data, modelITQ):
     dataTrans=objPCA.transform(data)
     matRot=modelITQ["matRot"]
     dataTrans=dataTrans.dot(matRot)
-    if 0==dataTrans.shape[1]%8:
-        codeByteNum=dataTrans.shape[1]/8
-    else:
-        codeByteNum=1+dataTrans.shape[1]/8
-    codeITQ=npy.zeros((dataTrans.shape[0],codeByteNum),dtype=npy.uint8)
-    for kk in range(dataTrans.shape[1]):
-        idxByte=kk/8
-        idxBit=kk%8
-        codeITQ[dataTrans[:,kk]>0,idxByte]+=(1<<idxBit)
+    binCode=npy.zeros(dataTrans.shape, dtype=npy.int8)
+    binCode[dataTrans>0]=1
+    print binCode
+    codeITQ=GetCompactCode(binCode)
     return codeITQ
 
 if __name__=="__main__":
@@ -48,20 +43,14 @@ if __name__=="__main__":
     baseData=ReadFvecs(dataPath,"siftsmall_base.fvecs")
     queryData=queryData.astype(npy.float32)
     baseData=baseData.astype(npy.float32)
-    idxKnnGt=GetGtKnnIdx(queryData,baseData,100)
+    idxKnnGt=GetKnnIdx(queryData,baseData,100, 0)
 
     modelITQ=ITQtrain(trainData,80,10)
     queryCode=ITQeval(queryData,modelITQ)
-    baseCode=ITQeval(baseData,modelITQ)
+    baseCode=ITQeval(baseData,modelITQ)   
     
     numNN=30
-    objMatcher=cv2.BFMatcher(cv2.NORM_HAMMING)
-    matches=objMatcher.knnMatch(queryCode,baseCode,k=numNN)
-    idxKnn=npy.zeros((queryData.shape[0],numNN), dtype=npy.int32)
-    for kk in range(queryData.shape[0]):
-        for ll in range(numNN):
-            idxKnn[kk][ll]=matches[kk][ll].trainIdx
-    
+    idxKnn=GetKnnIdx(queryCode,baseCode,numNN, 1)    
     retrivMetric=GetRetrivalMetric(idxKnnGt, idxKnn, numNN, baseData.shape[0]+1)
     print retrivMetric
 

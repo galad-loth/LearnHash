@@ -9,8 +9,11 @@ Created by jlfeng, 2017-01-09
 import numpy as npy
 import cv2
 
-def GetGtKnnIdx(queryData,baseData,numNN):
-    objMatcher=cv2.BFMatcher(cv2.NORM_L2)
+def GetKnnIdx(queryData,baseData,numNN, metric=0):
+    if (metric==0):
+        objMatcher=cv2.BFMatcher(cv2.NORM_L2)
+    elif (metric==1):
+        objMatcher=cv2.BFMatcher(cv2.NORM_HAMMING)
     matches=objMatcher.knnMatch(queryData,baseData,k=numNN)
     idxKnn=npy.zeros((queryData.shape[0],numNN), dtype=npy.int32)
     for kk in range(queryData.shape[0]):
@@ -18,6 +21,20 @@ def GetGtKnnIdx(queryData,baseData,numNN):
             idxKnn[kk][ll]=matches[kk][ll].trainIdx
     return idxKnn
 
+    
+def GetCompactCode(binCode):
+    ncode,nbit=binCode.shape
+    if nbit%8==0:
+        nbyte=nbit/8
+    else:
+        nbyte=nbit/8+1
+    compactCode=npy.zeros((ncode, nbyte), dtype=npy.uint8)
+    for kk in range(nbit):
+        idxByte=kk/8
+        idxBit=kk%8
+        compactCode[binCode[:,kk]>0,idxByte]+=(1<<idxBit)
+    return compactCode
+    
 def GetClassMetric(gtLabal, testLabel, numClass=-1, labelSet=npy.array([])):
     if numClass>0:
         labelSet=npy.arange(numClass)

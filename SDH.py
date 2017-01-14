@@ -68,3 +68,5 @@ if __name__=="__main__":
     
     codeTrain=EvalSHD(trainData,modelSDH)
     codeTest=EvalSHD(testData,modelSDH)
+    
+    

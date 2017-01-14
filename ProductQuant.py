@@ -2,7 +2,7 @@ import numpy as npy
 from LoadData import ReadFvecs,ReadIvecs
 from sklearn.cluster import KMeans
 from scipy.spatial.distance import pdist,squareform 
-from Utils import GetRetrivalMetric, GetGtKnnIdx
+from Utils import GetRetrivalMetric, GetKnnIdx
    
 def PQTrain(data, lenSubVec,numSubCenter):
     (dataSize, dataDim)=data.shape
@@ -70,7 +70,7 @@ if __name__=="__main__":
     idxGt=ReadIvecs(dataPath,"siftsmall_groundtruth.ivecs")    
     queryData=queryData.astype(npy.float32)
     baseData=baseData.astype(npy.float32)
-    idxKnnGt=GetGtKnnIdx(queryData,baseData,100)
+    idxKnnGt=GetKnnIdx(queryData,baseData,100)
     
     queryCode=PQEval(queryData,lenSubVec,numSubCenter,modelPQ["centers"])
     baseCode=PQEval(baseData,lenSubVec,numSubCenter,modelPQ["centers"])
