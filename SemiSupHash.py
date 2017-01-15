@@ -50,14 +50,44 @@ def TrainSSHNOPL(data, dataL, adjMat, nbit, eta, rau):
     nbit=npy.min([nbit,data.shape[1]])
     projMat=npy.dot(matL, eigVecs[:,idxSort[-1:-nbit-1:-1]])
     modelSSH={"datamean":datamean, "projMat":projMat}
-    return modelSSH
+    return modelSSH    
+    
+def TrainSSHSPL(data, dataL, adjMat, nbit, eta, alpha):
+    datamean=npy.mean(data, axis=0)
+    data=data-datamean
+    dataL=dataL-datamean     
+    adjMat0=adjMat.copy()
+    projMat=npy.zeros((data.shape[1], nbit), dtype=npy.float32)
+    for k in range(nbit):
+        covMatU=npy.dot(data.T, data)   
+        covMatL=npy.dot(dataL.T, npy.dot(adjMat0, dataL))
+        covMat=eta*covMatU+(1-eta)*covMatL
+        eigVals, eigVecs=npy.linalg.eig(covMat)
+        idxSort=npy.argsort(npy.abs(eigVals))
+        eigVec1=eigVecs[:,idxSort[-1]]
+        projDataL=npy.dot(dataL, eigVec1)
+        projData=npy.dot(data, eigVec1)
+        data=data-npy.dot(projData[:,npy.newaxis], eigVec1[npy.newaxis,:])
+        dataL=dataL-npy.dot(projDataL[:,npy.newaxis], eigVec1[npy.newaxis,:])
+        adjMatDelt=npy.dot(projDataL[:, npy.newaxis], projDataL[npy.newaxis,:])
+        adjMatDelt=adjMatDelt/npy.max(npy.abs(adjMatDelt))
+        idxSameSign=((adjMatDelt*adjMat0)>=0)
+        adjMatDelt[idxSameSign]=0
+        adjMat0=adjMat0-alpha*adjMatDelt
+        adjMat0=(adjMat0+adjMat0.T)/2
+        projMat[:,k]=eigVec1   
+
+    modelSSH={"datamean":datamean, "projMat":projMat}
+    return modelSSH      
+        
     
 def EvalSSH(data, modelSSH):
     data=data-modelSSH["datamean"]
     projData=npy.dot(data, modelSSH["projMat"])
     binCode=(projData>npy.mean(projData,axis=0)).astype(npy.int8)
     compactCode=Utils.GetCompactCode(binCode)
-    return compactCode
+    return compactCode      
+    
     
 if __name__=="__main__":
     dataPath="E:\\DevProj\\Datasets\\SIFT1M\\siftsmall"
@@ -74,8 +104,8 @@ if __name__=="__main__":
     eta=0.75
     nbit=64
     # modelSSH=TrainSSHOPL(trainData, dataL, adjMat, nbit, eta)
-    rau=0.001
-    modelSSH=TrainSSHNOPL(trainData, dataL, adjMat, nbit, eta, rau)
+    alpha=0.5
+    modelSSH=TrainSSHSPL(trainData, dataL, adjMat, nbit, eta, alpha)
     
     baseCode=EvalSSH(baseData,modelSSH)
     queryCode=EvalSSH(queryData,modelSSH)
