@@ -8,6 +8,12 @@ Created by jlfeng, 2017-01-09
 '''
 import numpy as npy
 import cv2
+from scipy.spatial.distance import cdist
+
+def KernelRBF(data1, data2, sigmaRBF):
+    distMat=cdist(data1, data2, "sqeuclidean")
+    gramMat=npy.exp(-distMat/(2*sigmaRBF*sigmaRBF))
+    return gramMat
 
 def GetKnnIdx(queryData,baseData,numNN, metric=0):
     if (metric==0):
