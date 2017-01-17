@@ -22,10 +22,11 @@ def GetTrainPairs(data, kq, kn, ks):
     npy.random.shuffle(pairInfo)
     return pairInfo
 
-def TrainMLH(data, pairInfo):
-    #pairInfo=GetTrainPairs(trainData, 1000, 100, 50)
-    pass
-
+def TrainMLH(data, paras):
+    ndata, dimdata=data.shape
+    w=InitWeights(dimData, paras["nbit"])
+    for tau in range(paras["nepoch"]):  
+        pass
 
 
 if __name__=="__main__":
@@ -36,8 +37,9 @@ if __name__=="__main__":
     baseData=ReadFvecs(dataPath,"siftsmall_base.fvecs")
     queryData=queryData.astype(npy.float32)
     baseData=baseData.astype(npy.float32) 
-    idxKnnGt=Utils.GetKnnIdx(queryData,baseData,100,0)    
+    idxKnnGt=Utils.GetKnnIdx(queryData,baseData,100,0)     
     
+    pairInfo=GetTrainPairs(trainData, 5000, 100, 50)
     paraMLH={"nbit":64, "beta": 0.5, "eta": 0.1, "rau":5,
-        "nepoch", 50, "batchsize":1000}
-    TrainMLH(trainData, paraMLH)
+        "nepoch":50, "batchsize":5000, "minibatch": 5}
+    # TrainMLH(trainData, pairInfo, paraMLH)
