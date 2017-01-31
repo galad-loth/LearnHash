@@ -12,8 +12,18 @@ Implementation of various descriptor learning and feature hashing method
 
 [5] Fumin Shen,Chunhua Shen,Wei Liu,Heng Tao Shen,Supervised Discrete Hashing, CVPR, 2015. 
 
-[5] Erin Liong, Venice, et al. "Deep hashing for compact binary codes learning." Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. 2015.
+[6] Weiss Y, Torralba A, Fergus R. Spectral hashing[C]//Advances in neural information processing systems. 2009: 1753-1760.
 
-[6]Zagoruyko, Sergey, and Nikos Komodakis. "Learning to compare image patches via convolutional neural networks." Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. 2015.
+[7] Liu W, Wang J, Kumar S, et al. Hashing with graphs[C]//Proceedings of the 28th international conference on machine learning (ICML-11). 2011: 1-8.
+
+[8] Wang J, Kumar S, Chang S F. Semi-supervised hashing for large-scale search[J]. IEEE Transactions on Pattern Analysis and Machine Intelligence, 2012, 34(12): 2393-2406.
+
+[9] Liu L, Yu M, Shao L. Learning Short Binary Codes for Large-scale Image Retrieval[J]. IEEE Transactions on Image Processing, 2017.
+
+[10] Guo Y, Ding G, Liu L, et al. Learning to Hash with Optimized Anchor Embedding for Scalable Retrieval[J]. IEEE transactions on image processing: a publication of the IEEE Signal Processing Society, 2017.
+
+[11] Erin Liong, Venice, et al. "Deep hashing for compact binary codes learning." Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. 2015.
+
+[12]Zagoruyko, Sergey, and Nikos Komodakis. "Learning to compare image patches via convolutional neural networks." Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. 2015.
 
 
