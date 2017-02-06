@@ -1,4 +1,4 @@
-# DescHash
+# Learning to Hashing
 Implementation of various descriptor learning and feature hashing method
 
 ##reference
@@ -24,6 +24,5 @@ Implementation of various descriptor learning and feature hashing method
 
 [11] Erin Liong, Venice, et al. "Deep hashing for compact binary codes learning." Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. 2015.
 
-[12]Zagoruyko, Sergey, and Nikos Komodakis. "Learning to compare image patches via convolutional neural networks." Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. 2015.
 
 
